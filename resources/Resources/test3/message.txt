@@ -1,0 +1,17 @@
+Re-Bonjour,
+
+Pour vous expliquer d'où vient cette décision sur le travail individuel, un questionnaire a été envoyé à tous les étudiants de l'ENSIBS. L'objectif étant d'avoir des informations afin d'orienter les prises de décision et il semblerait que beaucoup d'étudiant parmi ceux qui ont répondu trouvent que les travaux en groupe prennent beaucoup plus de temps du fait que la coordination soit plus compliquée. Le soucis de ce fonctionnement effectivement c'est que vos réponses ont été un peu noyée dans les réponses des étudiants des autres composantes donc je comprends que cela vous étonne et que vu le contexte vous préféreriez travailler ensemble (ce qui n'est pas vraiment incompatible avec les recommandations du TP).
+
+Le problème que j'ai avec le travail en binôme c'est que le TP a été dimensionné pour une personne donc la charge de travail est assez faible pour 8h et n'est pas très propice à la répartition des tâches (à part, celle du développeur et rédacteur de rapport...). De plus, comme je l'indique dans le sujet vous pouvez vous entraider puis ensuite moduler/adapter votre travail afin qu'il corresponde à votre objectif.
+
+Vu le contexte, Ce que je vous propose c'est un compromis entre mon problème et votre besoin :
+
+Vous pouvez travailler en binôme ou en individuel si vous le souhaitez cependant si vous travaillez en binôme alors il faudra que votre application fonctionne selon deux scénarios différents au lieu d'un seul. En gros, il faut qu'il y ait deux démonstration différentes. Dans ce cas, le rapport contiendra les données de chacune des deux attaques (démonstration, impact, une seule métrique de validation par scénario) et ce sera bien sûr un seul rendu par groupe. Il sera très facile de moduler un scénario pour en faire une variante ou via une réponse différente, vous pouvez même rendre votre solution modulaire afin d'utiliser des fichiers de "pattern".
+
+Ceux qui travailleront en individuel, aucun changement, un seul scénario (Détection / Réponse).
+
+L'avantage de ce fonctionnement c'est qu'il s'adapte à votre façon de travailler, si vous souhaitez travailler en groupe car vous serez plus efficace et que c'est plus agréable alors vous le pouvez et si vous préférez travailler seul alors vous le pouvez également sans être pénalisé par rapport à ceux qui travaillent en groupe.
+
+J'ai mis à jour le fichier sur moodle.
+
+Cordialement,
