@@ -1,6 +1,13 @@
 version: '3'
 services:
-  web:
+  rsc:
     build: ./resources
     ports:
       - "5000:5000"
+  jwt:
+    build: ./jwt
+    ports:
+      - "5555:5555"
+      - "5556:5556"
+      - "5557:5557"
+      - "5558:5558"
