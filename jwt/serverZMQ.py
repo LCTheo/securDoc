@@ -212,7 +212,7 @@ class ThreadCreateToken(Thread):
 
 
 ################################################################################
-# createKey()
+createKey("keyClient", "client")
 
 ctx = zmq.Context.instance()
 

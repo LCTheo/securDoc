@@ -5,9 +5,8 @@ services:
     ports:
       - "5000:5000"
   jwt:
-    build: ./jwt
-    ports:
-      - "5555:5555"
-      - "5556:5556"
-      - "5557:5557"
-      - "5558:5558"
+    build: jwt
+  usr:
+      build: usr
+      ports:
+        - "5000:5001"

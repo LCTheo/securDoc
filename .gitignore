@@ -130,3 +130,7 @@ dmypy.json
 
 # idea
 .idea/
+keyServer/
+keyClient/
+*.key_secret
+*.key

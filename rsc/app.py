@@ -21,9 +21,9 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
 
-@app.route('/test/')
+@app.route('/upload/')
 def upload_form():
-    return render_template('test.html')
+    return render_template('upload.html')
 
 
 @api.route("/rsc/<string:user_id>")
@@ -37,7 +37,7 @@ class ResourcesList(Resource):
 
         if data.get('token'):
             if Auth.verifyToken(data.get('token'), user_id):
-                return {'response': "all file"}, 200
+                return {'response': os.listdir(".\\Resources\\"+user_id+"\\")}, 200
             else:
                 return {'response': "fail "}, 400
 
@@ -93,14 +93,17 @@ class Resource(Resource):
             else:
                 return {'response': "Token validation error "}, 400
 
+    @api.expect(token_argument)
     def delete(self, user_id, resource_name):
 
         data = token_argument.parse_args(request)
 
         if data.get('token'):
             if Auth.verifyToken(data.get('token'), user_id):
-                if path.exists("./Resources/" + user_id + "/" + resource_name):
-                    return {'response': "file found"}, 200
+                filepath = "Resources\\" + user_id + "\\" + resource_name
+                if path.exists(filepath):
+                    os.remove(filepath)
+                    return {'response': "file deleted"}, 200
             else:
                 return {'response': "fail "}, 400
 
