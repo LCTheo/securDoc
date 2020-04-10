@@ -23,7 +23,7 @@ from threading import Thread
 #################################################################
 def createKey(directoryname, filename):
     keys_dir = os.path.join(os.path.dirname(__file__), directoryname)
-    os.system("mkdir " + directoryname + "2> /dev/null")
+    os.mkdir(directoryname)
     server_public_file, server_secret_file = zmq.auth.create_certificates(keys_dir, filename)
 
 

@@ -26,7 +26,7 @@ def upload_form():
     return render_template('test.html')
 
 
-@api.route("/resources/<string:user_id>")
+@api.route("/rsc/<string:user_id>")
 class ResourcesList(Resource):
 
     @api.response(200, 'Resources access : Success')
@@ -72,7 +72,7 @@ class ResourcesList(Resource):
                 return {'response': "fail "}, 400
 
 
-@api.route("/resources/<string:user_id>/<string:resource_name>")
+@api.route("/rsc/<string:user_id>/<string:resource_name>")
 class Resource(Resource):
 
     @api.response(200, 'Resources access : Success')
