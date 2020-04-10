@@ -4,7 +4,7 @@ import pymongo
 
 from flask import Flask, request
 from flask_restx import Api, Resource, reqparse, fields
-
+import Token
 myclient = pymongo.MongoClient("mongodb://localhost:27017/")
 mydb = myclient["API_USERS"]
 
@@ -36,6 +36,7 @@ class UsersList(Resource):
         """
         data = users_arguments.parse_args(request)
         password = data.get("password")
+        user_id = data.get('id')
         cursor = mydb.users.find({'id': data.get('id'), "password": hashlib.sha512(password.encode("utf-8")).hexdigest()}, {"_id": 0})
 
         data = []
@@ -44,7 +45,8 @@ class UsersList(Resource):
         if(len(data)==0):
             return {"response": None}, 400
         else:
-            return {"response": "tokenwallah"}, 200
+            token = Token.getToken(user_id, hashlib.sha512(password.encode("utf-8")).hexdigest())
+            return {"response": token}, 200
 
     @api.response(200, 'Flask REST API_USERS : User creation success')
     @api.response(400, 'Flask REST API_USERS : User already existing')
@@ -61,7 +63,7 @@ class UsersList(Resource):
                 return {"response": None}, 400
             else:
                 mydb.users.insert_one({"id": id, "password": hashlib.sha512(password.encode("utf-8")).hexdigest()})
-                return {"response": {"id": id, "password": hashlib.sha512(password.encode("utf-8")).hexdigest()}}, 200
+                return {"response": "User creation success"}, 200
 
 
 @api.route("/users/<string:id>")

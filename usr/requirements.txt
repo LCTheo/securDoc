@@ -3,3 +3,6 @@ Flask==1.1.1
 flask-restx==0.2
 pymongo
 hashlib
+pyzmq==19.0.0
+datetime==4.3
+jwt==1.0.0

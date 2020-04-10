@@ -5,12 +5,29 @@
 #   Connects REQ socket to tcp://localhost:5555
 #   Sends "Hello" to client, expects "World" back
 #
-import time
 import zmq.auth
 import zmq
-import shutil
 import os
-from zmq.auth.thread import ThreadAuthenticator
+
+
+def getToken(user_id, hash):
+    # create context for socket
+    ctx = zmq.Context.instance()
+
+    # init client to send data
+    clientSend = initSend(ctx, 5555, "keyClient/client.key_secret")
+    # init client to receive data
+    clientReceive = initReceive(ctx, 5556, "keyClient/client.key_secret", "keyServer/server.key")
+
+    # send string
+    clientSend.send_string(user_id+" hash_pass")
+
+    # read response
+    a = 0
+    while a == 0:
+        if clientReceive.poll(1000):
+            res = clientReceive.recv_string()
+            return res
 
 
 #################################################################
@@ -20,7 +37,7 @@ from zmq.auth.thread import ThreadAuthenticator
 #################################################################
 def createKey():
     keys_dir = os.path.join(os.path.dirname(__file__), 'keyClient')
-    os.system("mkdir keyClient 2> /dev/null")
+    os.mkdir("keyClient")
 
     # create new keys in key dir
     # client_public_file, client_secret_file = zmq.auth.create_certificates(keys_dir, "client")
@@ -67,7 +84,7 @@ def initSend(ctx, port, path_privateKey):
 # deletekeyClient directory
 #
 #################################################################
-def initReceive(ctx, port, path_privateKey, path_publicKey):
+def initReceive(ctx, port, path_privateKey, path_publicKey,):
     serverReceive = ctx.socket(zmq.PULL)
 
     # get the directory where the keys are.
@@ -87,50 +104,5 @@ def initReceive(ctx, port, path_privateKey, path_publicKey):
     serverReceive.curve_serverkey = client_public
 
     # connect the server receive socket
-    serverReceive.connect("tcp://localhost:" + str(port))
+    serverReceive.connect("tcp://jwt:" + str(port))
     return serverReceive
-
-
-################################################################################
-
-# A CLIENT WHO NEED TOKEN
-
-# create context for socket
-ctx = zmq.Context.instance()
-
-# init client to send data
-clientSend = initSend(ctx, 5555, "keyClient/client.key_secret")
-# init client to receive data
-clientReceive = initReceive(ctx, 5556, "keyClient/client.key_secret", "keyServer/server.key")
-
-# send string
-clientSend.send_string("login hash_pass")
-
-# read response
-a = 0
-while a == 0:
-    if clientReceive.poll(1000):
-        res = clientReceive.recv_string()
-        print(res)
-        a = 1
-
-#################################################################################
-
-# A CLIENT WHO NEED TO VERIF TOKEN
-
-# create other socket to send and receive data
-token = res
-clientSend2 = initSend(ctx, 5557, "keyClient/client.key_secret")
-clientReceive2 = initReceive(ctx, 5558, "keyClient/client.key_secret", "keyServer/server.key")
-
-# send login and my token
-clientSend2.send_string("login " + token)
-
-# read response
-while True:
-    if clientReceive2.poll(1000):
-        res = clientReceive2.recv_string()
-        print(res)
-        quit()
-
-################################################################################
