@@ -1,5 +1,4 @@
-from flask import Flask, request, render_template, redirect, send_from_directory, send_file, jsonify, json, \
-    make_response
+from flask import Flask, render_template, request, redirect, send_file
 from flask_restx import Api, Resource, reqparse
 import os
 from os import listdir, path
@@ -63,7 +62,7 @@ class ResourcesList(Resource):
                     onlyDir = [d for d in listdir("./Resources") if not isfile(join("./Resources", d))]
                     if not (user_id in onlyDir):
                         os.mkdir("Resources/" + user_id)
-                    file.save(os.path.join("./Resources/"+user_id, filename))
+                    file.save(os.path.join("./Resources/" + user_id, filename))
                     print('File successfully uploaded')
                     return redirect('/')
                 else:
@@ -71,7 +70,6 @@ class ResourcesList(Resource):
                     return redirect(request.url)
             else:
                 return {'response': "fail "}, 400
-
 
 
 @api.route("/resources/<string:user_id>/<string:resource_name>")
@@ -87,7 +85,7 @@ class Resource(Resource):
 
         if data.get('token'):
             if Auth.verifyToken(data.get('token'), user_id):
-                filepath = "Resources\\"+user_id+"\\"+resource_name
+                filepath = "Resources\\" + user_id + "\\" + resource_name
                 if path.exists(filepath):
                     return send_file(filepath, as_attachment=True)
                 else:
@@ -101,12 +99,10 @@ class Resource(Resource):
 
         if data.get('token'):
             if Auth.verifyToken(data.get('token'), user_id):
-                if path.exists("./Resources/"+user_id+"/"+resource_name):
-
-                    return {'response': "file found" }, 200
+                if path.exists("./Resources/" + user_id + "/" + resource_name):
+                    return {'response': "file found"}, 200
             else:
                 return {'response': "fail "}, 400
-
 
 
 if __name__ == "__main__":
