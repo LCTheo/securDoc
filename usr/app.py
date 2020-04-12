@@ -21,8 +21,8 @@ user_definition = api.model('User Informations', {
     'password': fields.String(required=True)
 })
 
-user_definition2 = api.model('Only password', {
-    'password': fields.String(required=True)
+user_definition2 = api.model('New password', {
+    'new_password': fields.String(required=True)
 })
 
 @api.route("/users/")
@@ -66,32 +66,32 @@ class UsersList(Resource):
                 return {"response": "User creation success"}, 200
 
 
-@api.route("/users/<string:id>")
+@api.route("/users/<string:id>/<string:password>")
 class User(Resource):
     @api.response(200, 'Flask REST API_USERS : User update success')
-    @api.response(400, 'Flask REST API_USERS : Error : User id not found')
+    @api.response(400, 'Flask REST API_USERS : Error : Invalid credentials')
     @api.expect(user_definition2)
-    def put(self, id):
+    def put(self, id,password):
         """
         Edits a selected user
         """
         data = request.get_json()
-        password = data.get("password")
-        if mydb.users.find_one({"id": id}):
-            mydb.users.update_one({'id': id}, {'$set': {"password": hashlib.sha512(password.encode("utf-8")).hexdigest()}})
-            return {"response": {"id": id, "password": hashlib.sha512(password.encode("utf-8")).hexdigest()}}, 200
+        new_password = data.get("new_password")
+        if mydb.users.find_one({"id": id, "password": hashlib.sha512(password.encode("utf-8")).hexdigest()}):
+            mydb.users.update_one({'id': id}, {'$set': {"password": hashlib.sha512(new_password.encode("utf-8")).hexdigest()}})
+            return {"response": {"id": id, "password": hashlib.sha512(new_password.encode("utf-8")).hexdigest()}}, 200
         else:
             return {"response": None}, 400
 
     @api.response(200, 'Flask REST API_USERS : User delete success')
-    @api.response(400, 'Flask REST API_USERS : Error : User id not found')
-    def delete(self, id):
+    @api.response(400, 'Flask REST API_USERS : Error :Invalid credentials')
+    def delete(self, id, password):
         """
         Deletes a selected user
         """
-        if mydb.users.find_one({"id": id}):
+        if mydb.users.find_one({"id": id, "password": hashlib.sha512(password.encode("utf-8")).hexdigest()}):
             mydb.users.delete_one({'id': id})
-            return {"response": {'id': id}}, 200
+            return {"response": {"id": id, "password": hashlib.sha512(password.encode("utf-8")).hexdigest()}}, 200
         else:
             return {"response": None}, 400
 
