@@ -12,7 +12,7 @@
     <option name="TEMPLATE_FOLDERS">
       <list>
         <option value="$MODULE_DIR$/venv/Lib/site-packages/flask_restx/templates" />
-        <option value="$MODULE_DIR$/resources/templates" />
+        <option value="$MODULE_DIR$/rsc/templates" />
       </list>
     </option>
   </component>

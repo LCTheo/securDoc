@@ -1,40 +1,9 @@
-# -*- coding: utf-8 -*-
-
-#
-#   Hello World server in Python
-#   Binds REP socket to tcp://*:5555
-#   Expects b"Hello" from client, replies with b"World"
-#
-
 import datetime
 import zmq.auth
 import zmq
 import os
 import jwt
 from threading import Thread
-
-
-#################################################################
-#
-# create public and private key
-# directoryname, le répertoire à creer pour stocker les clés
-# filename, le nom des clés.
-#
-#################################################################
-def createKey(directoryname, filename):
-    keys_dir = os.path.join(os.path.dirname(__file__), directoryname)
-    os.mkdir(directoryname)
-    server_public_file, server_secret_file = zmq.auth.create_certificates(keys_dir, filename)
-
-
-#################################################################
-#
-# delete the directory where the keys are stored
-# directoryname, the name oh the directory 
-#
-#################################################################
-def deleteKey(directoryname):
-    os.system("rm -r " + directoryname)
 
 
 #################################################################
@@ -212,7 +181,6 @@ class ThreadCreateToken(Thread):
 
 
 ################################################################################
-createKey("keyClient", "client")
 
 ctx = zmq.Context.instance()
 

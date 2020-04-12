@@ -10,7 +10,7 @@ import zmq
 import os
 
 
-def getToken(user_id, hash):
+def getToken(user_id, hashpass):
     # create context for socket
     ctx = zmq.Context.instance()
 
@@ -20,7 +20,7 @@ def getToken(user_id, hash):
     clientReceive = initReceive(ctx, 5556, "keyClient/client.key_secret", "keyServer/server.key")
 
     # send string
-    clientSend.send_string(user_id+" hash_pass")
+    clientSend.send_string(user_id + " " + hashpass)
 
     # read response
     a = 0
@@ -28,30 +28,6 @@ def getToken(user_id, hash):
         if clientReceive.poll(1000):
             res = clientReceive.recv_string()
             return res
-
-
-#################################################################
-#
-# create keyfile on keyClient directory
-#
-#################################################################
-def createKey():
-    keys_dir = os.path.join(os.path.dirname(__file__), 'keyClient')
-    os.mkdir("keyClient")
-
-    # create new keys in key dir
-    # client_public_file, client_secret_file = zmq.auth.create_certificates(keys_dir, "client")
-
-    client_public_file, client_secret_file = zmq.auth.create_certificates(keys_dir, "client")
-
-
-#################################################################
-#
-# deletekeyClient directory
-#
-#################################################################
-def deleteKey():
-    os.system("rm -r keyClient")
 
 
 #################################################################
