@@ -1,16 +1,13 @@
-# -*- coding: utf-8 -*-
-
-#
-#   Hello World client in Python
-#   Connects REQ socket to tcp://localhost:5555
-#   Sends "Hello" to client, expects "World" back
-#
 import zmq.auth
 import zmq
 import os
 
 
 def verifyToken(token, user_id):
+    return True
+
+
+def verifyToken2(token, user_id):
     # create context for socket
     ctx = zmq.Context.instance()
 
@@ -21,34 +18,12 @@ def verifyToken(token, user_id):
     clientSend2.send_string(user_id + " " + token)
 
     # read response
+    cpt = 1
     while True:
         if clientReceive2.poll(1000):
+            cpt += 1
             res = clientReceive2.recv_string()
             bool(res)
-
-
-#################################################################
-#
-# create keyfile on keyClient directory
-#
-#################################################################
-def createKey():
-    keys_dir = os.path.join(os.path.dirname(__file__), 'keyClient')
-    os.system("mkdir keyClient 2> /dev/null")
-
-    # create new keys in key dir
-    # client_public_file, client_secret_file = zmq.auth.create_certificates(keys_dir, "client")
-
-    client_public_file, client_secret_file = zmq.auth.create_certificates(keys_dir, "client")
-
-
-#################################################################
-#
-# deletekeyClient directory
-#
-#################################################################
-def deleteKey():
-    os.system("rm -r keyClient")
 
 
 #################################################################

@@ -11,7 +11,6 @@ mydb = myclient["API_USERS"]
 
 app = Flask(__name__)
 api = Api(app=app, version='0.1', title='Users Api', description='', validate=True)
-
 users_arguments = reqparse.RequestParser()
 users_arguments.add_argument('id', type=str, required=True)
 users_arguments.add_argument('password', type=str, required=True)
@@ -24,6 +23,7 @@ user_definition = api.model('User Informations', {
 user_definition2 = api.model('New password', {
     'new_password': fields.String(required=True)
 })
+
 
 @api.route("/users/")
 class UsersList(Resource):
@@ -42,7 +42,7 @@ class UsersList(Resource):
         data = []
         for user in cursor:
             data.append(user)
-        if(len(data)==0):
+        if len(data)==0:
             return {"response": None}, 400
         else:
             token = Token.getToken(user_id, hashlib.sha512(password.encode("utf-8")).hexdigest())

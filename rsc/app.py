@@ -1,24 +1,25 @@
-from flask import Flask, render_template, request, redirect, send_file
+
+
+from importlib.metadata import files
+
+from flask import Flask, request, send_file, render_template
 from flask_restx import Api, Resource, reqparse
 import os
-from os import listdir, path
-from os.path import isfile, join
-from werkzeug.datastructures import FileStorage
+from os import path
 from werkzeug.utils import secure_filename
-
+#from flask_cors import CORS
 import Auth
 
 app = Flask(__name__)
+#CORS(app)
 api = Api(app=app, version='0.1', title='Resources Doc API', validate=True)
 token_argument = reqparse.RequestParser()
 token_argument.add_argument('token', type=str, required=True)
 data_argument = api.parser()
 data_argument.add_argument('token', type=str, required=True)
-data_argument.add_argument('Data', type=FileStorage, required=True)
-
-
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+data_argument.add_argument('Data', type=files, required=True)
+if path.exists("./Resource"):
+    os.mkdir("./Resource")
 
 
 @app.route('/upload/')
@@ -37,37 +38,42 @@ class ResourcesList(Resource):
 
         if data.get('token'):
             if Auth.verifyToken(data.get('token'), user_id):
-                return {'response': os.listdir(".\\Resources\\"+user_id+"\\")}, 200
+                if path.exists("./Resources/"+user_id):
+                    return {'response': os.listdir("./Resources/"+user_id)}, 200
+                else:
+                    return {'response': []}, 200
             else:
                 return {'response': "fail "}, 400
 
     @api.response(200, 'Resources access : Success')
     @api.response(400, 'Resources access : Token validation error')
-    @api.response(401, 'Resources access : No file in payload')
+    @api.response(401, 'Resources access : Unexciting resource')
     @api.expect(token_argument)
     def post(self, user_id):
         data = token_argument.parse_args(request)
-
         if data.get('token'):
             if Auth.verifyToken(data.get('token'), user_id):
 
                 # check if the post request has the file part
                 if 'file' not in request.files:
-                    return {'response': "No file in payload "}, 401
+                    return {'response': "No field file in payload "}, 401
                 file = request.files['file']
                 if file.filename == '':
-                    return {'response': "No file in payload "}, 401
-                if file and allowed_file(file.filename):
+                    return {'response': "Empty file in payload "}, 401
+                if file:
                     filename = secure_filename(file.filename)
-                    onlyDir = [d for d in listdir("./Resources") if not isfile(join("./Resources", d))]
-                    if not (user_id in onlyDir):
+                    if not path.exists("./Resources/"+user_id):
                         os.mkdir("Resources/" + user_id)
-                    file.save(os.path.join("./Resources/" + user_id, filename))
-                    print('File successfully uploaded')
-                    return redirect('/')
+                    if path.exists(os.path.join("./Resources/" + user_id, filename)):
+                        cpt = 1
+                        while path.exists(os.path.join("./Resources/" + user_id, filename+cpt)):
+                            cpt += 1
+                        file.save(os.path.join("./Resources/" + user_id, filename+cpt))
+                    else:
+                        file.save(os.path.join("./Resources/" + user_id, filename))
+                    return {'response': "File successfully uploaded"}, 200
                 else:
-                    print('Allowed file types are txt, pdf, png, jpg, jpeg, gif')
-                    return redirect(request.url)
+                    return {'response': "Umpty file"}, 401
             else:
                 return {'response': "fail "}, 400
 
@@ -77,7 +83,7 @@ class Resource(Resource):
 
     @api.response(200, 'Resources access : Success')
     @api.response(400, 'Resources access : Token validation error')
-    @api.response(401, 'Resources access : unexciting resource')
+    @api.response(401, 'Resources access : Unexciting resource')
     @api.expect(token_argument)
     def get(self, user_id, resource_name):
 
@@ -89,10 +95,13 @@ class Resource(Resource):
                 if path.exists(filepath):
                     return send_file(filepath, as_attachment=True)
                 else:
-                    return {'response': "unexciting resource "}, 401
+                    return {'response': "File doesn't exist"}, 401
             else:
-                return {'response': "Token validation error "}, 400
+                return {'response': "Token validation error"}, 400
 
+    @api.response(200, 'Resources access : Success')
+    @api.response(400, 'Resources access : Token validation error')
+    @api.response(401, 'Resources access : Unexciting resource')
     @api.expect(token_argument)
     def delete(self, user_id, resource_name):
 
@@ -103,9 +112,11 @@ class Resource(Resource):
                 filepath = "Resources\\" + user_id + "\\" + resource_name
                 if path.exists(filepath):
                     os.remove(filepath)
-                    return {'response': "file deleted"}, 200
+                    return {'response': "File deleted"}, 200
+                else:
+                    return {'response': "File doesn't exist"}, 401
             else:
-                return {'response': "fail "}, 400
+                return {'response': "Token validation error"}, 400
 
 
 if __name__ == "__main__":
