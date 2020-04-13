@@ -235,7 +235,7 @@ def exchangePublicKey(port,clientKeyDirectory,serverPublicKey):
 	socket.bind("tcp://*:"+str(port))
 
 	g.open(serverPublicKey,"r")
-	publickey=f.read()
+	publickey=g.read()
 	g.close()
 	while True:
     	#  Wait for next request from client
@@ -251,11 +251,11 @@ def exchangePublicKey(port,clientKeyDirectory,serverPublicKey):
 # main fonction to listen and send information about token
 #
 #################################################################
-def main(portReceiveCreate,portSendCreate, portReceiveVerif, portSendVerif, privateKeyServer, publicKeyClient, ipClient, secret):
+def main(portReceiveCreate,portSendCreate, portReceiveVerif, portSendVerif, privateKeyServer, publicKeyClientCreate, publicKeyClientVerif, ipClientCreate, ipClientVerif, secret):
 	ctx = zmq.Context.instance()
-	t = ThreadVerifToken(ctx,portReceiveVerif,portSendVerif,privateKeyServer,publicKeyClient,secret,os.path.dirname(__file__),ipClient)
+	t = ThreadVerifToken(ctx,portReceiveVerif,portSendVerif,privateKeyServer,publicKeyClientVerif,secret,os.path.dirname(__file__),ipClientVerif)
 	t.start()
-	v = ThreadCreateToken(ctx,portReceiveCreate,portSendCreate,privateKeyServer,publicKeyClient,secret,os.path.dirname(__file__),ipClient)
+	v = ThreadCreateToken(ctx,portReceiveCreate,portSendCreate,privateKeyServer,publicKeyClientCreate,secret,os.path.dirname(__file__),ipClientCreate)
 	v.start()	
 
 
@@ -274,8 +274,8 @@ if __name__ == "__main__":
 	if(fonction=="deleteKey" and len(sys.argv[1:])==2):
 		deleteKey(sys.argv[2])
 		quit()
-	if(len(sys.argv[1:])==9 and fonction=="main"):
-		main(sys.argv[2],sys.argv[3],sys.argv[4],sys.argv[5],sys.argv[6],sys.argv[7],sys.argv[8],sys.argv[9])
+	if(len(sys.argv[1:])==11 and fonction=="main"):
+		main(sys.argv[2],sys.argv[3],sys.argv[4],sys.argv[5],sys.argv[6],sys.argv[7],sys.argv[8],sys.argv[9],sys.argv[10],sys.argv[11])
 		quit()
 	if(fonction =="exchangeKey" and len(sys.argv[1:])==4):
 		exchangePublicKey((sys.argv[2],(sys.argv[3],(sys.argv[4]))
