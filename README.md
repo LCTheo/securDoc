@@ -1,10 +1,10 @@
 # SecurDoc
-A micro-service based programme to store file in a Secure way.
+A micro-service based program to store file in a Secure way.
 
 ## How to start
-- run pip install requirements.txt to download dependency
-- Run the keyCreation.py script who create the key need for the communication with the ZMQ server.
-- Run docker-compose up
+- Run `pip install requirements.txt` to download dependency
+- Run `python keyCreation.py` script who creates the keys needed for the communication with the ZMQ server.
+- Run `docker-compose up` (Make sure you are using *Docker* and not *Docker Toolbox*, because the specified IP is **localhost**)
     
 ## How to use 
-- use the html page in front directory
+- Use the html page in front directory
