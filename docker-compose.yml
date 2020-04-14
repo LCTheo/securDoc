@@ -5,6 +5,8 @@ services:
     container_name: rsc
     ports:
       - "5000:5000"
+    volumes:
+      - rsc:/code/Resources
   jwt:
     build: jwt
     container_name: jwt
@@ -18,3 +20,8 @@ services:
     container_name: mongo
     ports:
       - "27016:27017"
+    volumes:
+      - DBdata:/data/db
+volumes:
+  DBdata:
+  rsc:
