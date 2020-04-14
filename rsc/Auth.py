@@ -4,31 +4,31 @@ import os
 
 
 def verifyToken(token, user_id):
-    return True
-
-
-def verifyToken2(token, user_id):
     # create context for socket
     ctx = zmq.Context.instance()
 
-    clientSend2 = initSend(ctx, 5557, "keyClient/client.key_secret")
-    clientReceive2 = initReceive(ctx, 5558, "keyClient/client.key_secret", "keyServer/server.key")
+    # init client to send data
+    clientSend = initSend(ctx, 5557, "keyClient/client.key_secret")
+    # init client to receive data
+    clientReceive = initReceive(ctx, 5558, "keyClient/client.key_secret", "keyServer/server.key", "jwt")
 
     # send login and my token
-    clientSend2.send_string(user_id + " " + token)
+    clientSend.send_string(user_id + " " + token)
 
     # read response
-    cpt = 1
     while True:
-        if clientReceive2.poll(1000):
-            cpt += 1
-            res = clientReceive2.recv_string()
-            bool(res)
+        if clientReceive.poll(1000):
+            res = clientReceive.recv_string()
+            return bool(res)
+
 
 
 #################################################################
 #
-# deletekeyClient directory
+# initiate a socket to send information
+# ctx, the zmq context
+# port, the port to send
+# path_privateKey, the path to access at the private key
 #
 #################################################################
 def initSend(ctx, port, path_privateKey):
@@ -53,10 +53,15 @@ def initSend(ctx, port, path_privateKey):
 
 #################################################################
 #
-# deletekeyClient directory
+# initiate a socket to receive information
+# ctx, the zmq context
+# port, the port to receive
+# path_privateKey, the path to access at the private key
+# path_publicKey, the path to access at the public key of the client
+# ipServer, ip of server
 #
 #################################################################
-def initReceive(ctx, port, path_privateKey, path_publicKey,):
+def initReceive(ctx, port, path_privateKey, path_publicKey, ipServer):
     serverReceive = ctx.socket(zmq.PULL)
 
     # get the directory where the keys are.
@@ -76,5 +81,5 @@ def initReceive(ctx, port, path_privateKey, path_publicKey,):
     serverReceive.curve_serverkey = client_public
 
     # connect the server receive socket
-    serverReceive.connect("tcp://jwt:" + str(port))
+    serverReceive.connect("tcp://" + ipServer + ":" + str(port))
     return serverReceive

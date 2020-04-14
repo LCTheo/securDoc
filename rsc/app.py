@@ -7,12 +7,12 @@ from flask_restx import Api, Resource, reqparse
 import os
 from os import path
 from werkzeug.utils import secure_filename
-#from flask_cors import CORS
+from flask_cors import CORS
 import Auth
 
 app = Flask(__name__)
-#CORS(app)
-api = Api(app=app, version='0.1', title='Resources Doc API', validate=True)
+CORS(app)
+api = Api(app=app, version='1.0', title='Resources Doc API', validate=True)
 token_argument = reqparse.RequestParser()
 token_argument.add_argument('token', type=str, required=True)
 data_argument = api.parser()
@@ -64,11 +64,13 @@ class ResourcesList(Resource):
                     filename = secure_filename(file.filename)
                     if not path.exists("./Resources/"+user_id):
                         os.mkdir("Resources/" + user_id)
+
                     if path.exists(os.path.join("./Resources/" + user_id, filename)):
+                        name = filename.rsplit('.', 1)
                         cpt = 1
-                        while path.exists(os.path.join("./Resources/" + user_id, filename+cpt)):
+                        while path.exists(os.path.join("./Resources/" + user_id, name[0]+str(cpt)+"."+name[1])):
                             cpt += 1
-                        file.save(os.path.join("./Resources/" + user_id, filename+cpt))
+                        file.save(os.path.join("./Resources/" + user_id, name[0]+str(cpt)+"."+name[1]))
                     else:
                         file.save(os.path.join("./Resources/" + user_id, filename))
                     return {'response': "File successfully uploaded"}, 200
@@ -91,7 +93,7 @@ class Resource(Resource):
 
         if data.get('token'):
             if Auth.verifyToken(data.get('token'), user_id):
-                filepath = "Resources\\" + user_id + "\\" + resource_name
+                filepath = "./Resources/" + user_id + "/" + resource_name
                 if path.exists(filepath):
                     return send_file(filepath, as_attachment=True)
                 else:
@@ -120,4 +122,4 @@ class Resource(Resource):
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', debug=False)
+    app.run(host='0.0.0.0')

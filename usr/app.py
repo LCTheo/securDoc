@@ -5,9 +5,10 @@ import pymongo
 from flask import Flask, request
 from flask_restx import Api, Resource, reqparse, fields
 import Token
-myclient = pymongo.MongoClient("mongodb://localhost:27017/")
-mydb = myclient["API_USERS"]
 
+myclient = pymongo.MongoClient('mongodb://mongo:27017/')
+mydb = myclient["API_USERS"]
+print("server version:", myclient.server_info()["version"])
 
 app = Flask(__name__)
 api = Api(app=app, version='0.1', title='Users Api', description='', validate=True)
@@ -37,12 +38,13 @@ class UsersList(Resource):
         data = users_arguments.parse_args(request)
         password = data.get("password")
         user_id = data.get('id')
-        cursor = mydb.users.find({'id': data.get('id'), "password": hashlib.sha512(password.encode("utf-8")).hexdigest()}, {"_id": 0})
+        cursor = mydb.users.find(
+            {'id': data.get('id'), "password": hashlib.sha512(password.encode("utf-8")).hexdigest()}, {"_id": 0})
 
         data = []
         for user in cursor:
             data.append(user)
-        if len(data)==0:
+        if len(data) == 0:
             return {"response": None}, 400
         else:
             token = Token.getToken(user_id, hashlib.sha512(password.encode("utf-8")).hexdigest())
@@ -71,14 +73,15 @@ class User(Resource):
     @api.response(200, 'Flask REST API_USERS : User update success')
     @api.response(400, 'Flask REST API_USERS : Error : Invalid credentials')
     @api.expect(user_definition2)
-    def put(self, id,password):
+    def put(self, id, password):
         """
         Edits a selected user
         """
         data = request.get_json()
         new_password = data.get("new_password")
         if mydb.users.find_one({"id": id, "password": hashlib.sha512(password.encode("utf-8")).hexdigest()}):
-            mydb.users.update_one({'id': id}, {'$set': {"password": hashlib.sha512(new_password.encode("utf-8")).hexdigest()}})
+            mydb.users.update_one({'id': id},
+                                  {'$set': {"password": hashlib.sha512(new_password.encode("utf-8")).hexdigest()}})
             return {"response": {"id": id, "password": hashlib.sha512(new_password.encode("utf-8")).hexdigest()}}, 200
         else:
             return {"response": None}, 400
@@ -98,4 +101,3 @@ class User(Resource):
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=False)
-
