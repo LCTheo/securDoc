@@ -136,4 +136,4 @@ keyServer/
 keyClient/
 *.key_secret
 *.key
-/rsc/Resources/
+rsc/Resources/
