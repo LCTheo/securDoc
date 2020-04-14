@@ -10,6 +10,8 @@ services:
   jwt:
     build: jwt
     container_name: jwt
+    environment:
+      JWT_PASS: changeit
   usr:
       build: usr
       container_name: usr
