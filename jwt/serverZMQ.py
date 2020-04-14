@@ -250,7 +250,8 @@ def exchangePublicKey(port, clientKeyDirectory, serverPublicKey):
 #
 #################################################################
 def main(portReceiveCreate, portSendCreate, portReceiveVerif, portSendVerif, privateKeyServer, publicKeyClientCreate,
-         publicKeyClientVerif, ipClientCreate, ipClientVerif, secret):
+         publicKeyClientVerif, ipClientCreate, ipClientVerif):
+    secret = os.getenv('JWT_PASS')
     logging.basicConfig(filename='app.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s',
                         level=logging.INFO)
     logging.info('start')
@@ -276,9 +277,9 @@ if __name__ == "__main__":
         elif fonction == "deleteKey" and len(sys.argv[1:]) == 2:
             deleteKey(sys.argv[2])
 
-        elif len(sys.argv[1:]) == 11 and fonction == "main":
+        elif len(sys.argv[1:]) == 10 and fonction == "main":
             main(sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9],
-                 sys.argv[10], sys.argv[11])
+                 sys.argv[10])
 
         elif fonction == "exchangeKey" and len(sys.argv[1:]) == 4:
             exchangePublicKey(sys.argv[2], sys.argv[3], sys.argv[4])
