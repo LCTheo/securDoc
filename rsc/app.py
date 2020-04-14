@@ -111,7 +111,7 @@ class Resource(Resource):
 
         if data.get('token'):
             if Auth.verifyToken(data.get('token'), user_id):
-                filepath = "Resources\\" + user_id + "\\" + resource_name
+                filepath = "./Resources/" + user_id + "/" + resource_name
                 if path.exists(filepath):
                     os.remove(filepath)
                     return {'response': "File deleted"}, 200

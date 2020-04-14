@@ -4,6 +4,7 @@ import pymongo
 
 from flask import Flask, request
 from flask_restx import Api, Resource, reqparse, fields
+from flask_cors import CORS
 import Token
 
 myclient = pymongo.MongoClient('mongodb://mongo:27017/')
@@ -11,6 +12,7 @@ mydb = myclient["API_USERS"]
 print("server version:", myclient.server_info()["version"])
 
 app = Flask(__name__)
+CORS(app)
 api = Api(app=app, version='0.1', title='Users Api', description='', validate=True)
 users_arguments = reqparse.RequestParser()
 users_arguments.add_argument('id', type=str, required=True)
