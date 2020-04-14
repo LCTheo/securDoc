@@ -19,7 +19,10 @@ def verifyToken(token, user_id):
     while True:
         if clientReceive.poll(1000):
             res = clientReceive.recv_string()
-            return bool(res)
+            if res == "True":
+                return True
+            else:
+                return False
 
 
 

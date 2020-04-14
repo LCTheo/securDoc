@@ -43,7 +43,7 @@ class ResourcesList(Resource):
                 else:
                     return {'response': []}, 200
             else:
-                return {'response': "fail "}, 400
+                return {'response': "Token validation error "}, 400
 
     @api.response(200, 'Resources access : Success')
     @api.response(400, 'Resources access : Token validation error')
