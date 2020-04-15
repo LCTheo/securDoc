@@ -5,9 +5,11 @@ from importlib.metadata import files
 from flask import Flask, request, send_file, render_template
 from flask_restx import Api, Resource, reqparse
 import os
-from os import path
+from os import path, stat
 from werkzeug.utils import secure_filename
 from flask_cors import CORS
+import tempfile
+import pyAesCrypt
 import Auth
 
 app = Flask(__name__)
@@ -20,6 +22,8 @@ data_argument.add_argument('token', type=str, required=True)
 data_argument.add_argument('Data', type=files, required=True)
 if path.exists("./Resource"):
     os.mkdir("./Resource")
+bufferSize = 64 * 1024
+password = "foopassword"
 
 
 @app.route('/upload/')
@@ -65,17 +69,22 @@ class ResourcesList(Resource):
                     if not path.exists("./Resources/"+user_id):
                         os.mkdir("Resources/" + user_id)
 
+                    file.save(os.path.join("/tmp/", filename))
+                    name = filename.rsplit('.', 1)
+                    cpt = 1
                     if path.exists(os.path.join("./Resources/" + user_id, filename)):
-                        name = filename.rsplit('.', 1)
-                        cpt = 1
+
                         while path.exists(os.path.join("./Resources/" + user_id, name[0]+str(cpt)+"."+name[1])):
                             cpt += 1
-                        file.save(os.path.join("./Resources/" + user_id, name[0]+str(cpt)+"."+name[1]))
+                        filepath = os.path.join("./Resources/" + user_id, name[0]+str(cpt)+"."+name[1])
                     else:
-                        file.save(os.path.join("./Resources/" + user_id, filename))
+                        filepath = os.path.join("./Resources/" + user_id, filename)
+
+                    pyAesCrypt.encryptFile(os.path.join("/tmp/", filename), filepath, password, bufferSize)
+                    os.remove(os.path.join("/tmp/", filename))
                     return {'response': "File successfully uploaded"}, 200
                 else:
-                    return {'response': "Umpty file"}, 401
+                    return {'response': "Empty file"}, 401
             else:
                 return {'response': "fail "}, 400
 
@@ -86,6 +95,7 @@ class Resource(Resource):
     @api.response(200, 'Resources access : Success')
     @api.response(400, 'Resources access : Token validation error')
     @api.response(401, 'Resources access : Unexciting resource')
+    @api.response(402, 'Resources access : decryption error')
     @api.expect(token_argument)
     def get(self, user_id, resource_name):
 
@@ -95,7 +105,9 @@ class Resource(Resource):
             if Auth.verifyToken(data.get('token'), user_id):
                 filepath = "./Resources/" + user_id + "/" + resource_name
                 if path.exists(filepath):
-                    return send_file(filepath, as_attachment=True)
+                    fOut = tempfile.NamedTemporaryFile()
+                    pyAesCrypt.decryptFile(filepath, fOut.name, password, bufferSize)
+                    return send_file(fOut.name, as_attachment=True, attachment_filename=resource_name)
                 else:
                     return {'response': "File doesn't exist"}, 401
             else:
