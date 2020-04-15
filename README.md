@@ -1,3 +1,4 @@
+#### Project realised by Henri Gléveau, Tristan Guerin, Théo Le Coz and Grégoire Philippe - INFO A2 ENSIBS
 # SecurDoc
 
 A micro-service based program to store file in a Secure way.
@@ -12,6 +13,8 @@ A micro-service based program to store file in a Secure way.
 **192.168.99.100** in the *front/APIrequest.js* file)
 
 ## How to use 
+
+- Wait for all the dockers to have built
 
 - Open the *front/index.html* page with your web browser (*Firefox* might cause problems)
 - You can now navigate through all the pages
