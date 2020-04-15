@@ -13,12 +13,25 @@
 
 <div class="navbar">
 
-    <ul class="navbar_enum">
+    <ul class="navbar_enum" id="ulid">
         <li class="Main"><a href="index.html">Home</a></li>
-        <li class="li_align"><a href="Connexion.html">Connexion</a></li>
-        <li class="li_align"><a href="Inscription.html">Inscription</a></li>
+        <li class="li_align"><a href="Connection.html">Connection</a></li>
+        <li class="li_align"><a href="Registration.html">Registration</a></li>
         <li class="li_align"><a href="Upload.html">Upload</a></li>
         <li class="li_align"><a href="Download.html">Download</a></li>
+        <li class="li_align"><div><span id="connected"></span></div></li>
+        <script>
+            if (localStorage.getItem('username')!=null) {
+                document.getElementById("connected").innerHTML = "Connected as <br/>" + localStorage.getItem('username');
+                var button = document.createElement("button");
+                button.innerHTML = "Disconnect";
+                button.onclick = Disconnection;
+                button.style="background-color:#333333;border:black;color: red;text-align: center;padding: 16px;text-decoration: none;"
+                document.getElementById("ulid").appendChild(button);
+            }else {
+                document.getElementById("connected").innerHTML = "Not connected";
+            }
+        </script>
     </ul>
 </div>
 
@@ -26,7 +39,7 @@
 
     <div class="container">
         <form action="">
-            <p><h1>Bienvenue sur la page de download</h1></p>
+            <p>Welcome on the download page</p>
             <div class="container_form" id="container_form">
                 <label class="neon_small"><b>Choose the file(s) to download : </b></label><br> <br>
             </div>
@@ -35,7 +48,7 @@
 </div>
 
 <div class ="footer">
-    <a>Site créé par Henri Gléveau, Tristan Guerin, Théo Le Coz et Grégoire Philippe - INFO A2 ENSIBS</a>
+    <a>Website created by Henri Gléveau, Tristan Guerin, Théo Le Coz and Grégoire Philippe - INFO A2 ENSIBS</a>
 </div>
 </body>
 </html>

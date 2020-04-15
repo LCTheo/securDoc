@@ -12,7 +12,7 @@ function Download(){
         alert()
         i = 0
         while(data["response"].length > i){
-            document.getElementById("container_form").innerHTML += "<br><a href=\"http://192.168.137.12:5000/rsc/"+user+"/"+data["response"][i]+"?token="+token+"\" download>"+data["response"][i]+"</a>"
+            document.getElementById("container_form").innerHTML += "<br><a href=\"http://localhost:5000/rsc/"+user+"/"+data["response"][i]+"?token="+token+"\" download>"+data["response"][i]+"</a>"
             i++
         }
 
@@ -41,6 +41,9 @@ function Upload(){
         contentType: false, // let xhr set the content type
         success: [function(){
             alert('File Uploaded');
+        }],
+        error: [function () {
+            alert('Error with the upload of the file');
         }]
     });
 
@@ -52,7 +55,7 @@ function Upload(){
 
 }
 
-function Inscription(){
+function Registration(){
     //fd.append('id', document.forms['form_inscription']['uname'].files[0]);
     //fd.append('password', document.forms['form_inscription']['psw'].files[0]);
 
@@ -69,6 +72,9 @@ function Inscription(){
         dataType: "json",
         success: [function(){
             alert('User Created');
+        }],
+        error: [function () {
+            alert('Error on user creation');
         }]
     });
 
@@ -89,6 +95,10 @@ function Connection(){
         data: data,
         success: [function(){
             alert('User Connected');
+            window.location.reload(false);
+        }],
+        error: [function () {
+            alert('Error on user connection');
         }]
     });
 
@@ -106,5 +116,9 @@ function Connection(){
     }, function(xhr) {
         console.error('failed to fetch xhr', xhr)
     })
+}
 
+function Disconnection() {
+    localStorage.clear();
+    window.location.reload(false);
 }
