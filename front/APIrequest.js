@@ -1,23 +1,25 @@
-// Create a request variable and assign a new XMLHttpRequest object to it.
+// change this variable to set the IP where is deployed the project
+const dockerIP = "192.168.137.12";
+
 
 function Download(){
-    var request = new XMLHttpRequest();
+    let request = new XMLHttpRequest();
     let user = localStorage.getItem('username');
     let token = localStorage.getItem('token');
 // Open a new connection, using the GET request on the URL endpoint
-    request.open('GET', 'http://localhost:5000/rsc/'+user+'?token='+token, true);
+    request.open('GET', 'https://'+dockerIP+':5000/rsc/'+user+'?token='+token, true);
 
     request.onload = function() {
-        var data = JSON.parse(this.response);
+        let data = JSON.parse(this.response);
         alert()
         i = 0
         while(data["response"].length > i){
-            document.getElementById("container_form").innerHTML += "<br><a href=\"http://localhost:5000/rsc/"+user+"/"+data["response"][i]+"?token="+token+"\" download>"+data["response"][i]+"</a>"
+            document.getElementById("container_form").innerHTML += "<br><a href=\"https://"+dockerIP+":5000/rsc/"+user+"/"+data["response"][i]+"?token="+token+"\" download>"+data["response"][i]+"</a>"
             i++
         }
 
-        var blob = new Blob([request.response], { type: 'file' });
-        var link = document.createElement('a');
+        let blob = new Blob([request.response], { type: 'file' });
+        let link = document.createElement('a');
         link.href = window.URL.createObjectURL(blob);
         link.download = this.response;
 
@@ -30,11 +32,11 @@ function Download(){
 function Upload(){
       let user = localStorage.getItem('username');
       let token = localStorage.getItem('token');
-    var fd = new FormData();
+    let fd = new FormData();
     fd.append('file', document.forms['fileinfo']['myfile'].files[0] /*, optional filename */)
 
-    var req = $.ajax({
-        url: 'http://localhost:5000/rsc/'+user+'?token='+token,
+    let req = $.ajax({
+        url: 'https://'+dockerIP+':5000/rsc/'+user+'?token='+token,
         method: 'POST',
         data: fd,
         processData: false, // don't let jquery process the data
@@ -59,13 +61,13 @@ function Registration(){
     //fd.append('id', document.forms['form_inscription']['uname'].files[0]);
     //fd.append('password', document.forms['form_inscription']['psw'].files[0]);
 
-    var data = {
+    let data = {
       id: document.getElementById('uname').value,
       password: document.getElementById('password').value,
     }
 
-    var req = $.ajax({
-        url: 'http://localhost:5001/users/',
+    let req = $.ajax({
+        url: 'https://'+dockerIP+':5001/users/',
         type: 'POST',
         contentType: "application/json",
         data: JSON.stringify(data),
@@ -89,8 +91,8 @@ function Connection(){
 
     let data = $("form").serialize()
 
-    var req = $.ajax({
-        url: 'http://localhost:5001/users/',
+    let req = $.ajax({
+        url: 'https://'+dockerIP+':5001/users/',
         type:'GET',
         data: data,
         success: [function(){
@@ -103,15 +105,15 @@ function Connection(){
     });
 
     req.then(function(response) {
-        regex = /b'(?<token>.+)'/gm;
+        let regex = /b'(?<token>.+)'/gm;
+        let m;
         while ((m = regex.exec(response["response"].toString())) !== null) {
-    // This is necessary to avoid infinite loops with zero-width matches
-    if (m.index === regex.lastIndex) {
-        regex.lastIndex++;
-    }
-    newtoken = m[1]
-}
-        localStorage.setItem('token', newtoken);
+            // This is necessary to avoid infinite loops with zero-width matches
+            if (m.index === regex.lastIndex) {
+                regex.lastIndex++;
+            }
+        }
+        localStorage.setItem('token', m[1]);
         localStorage.setItem('username', document.getElementById('id').value);
     }, function(xhr) {
         console.error('failed to fetch xhr', xhr)

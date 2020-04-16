@@ -7,6 +7,8 @@ services:
       - "5000:5000"
     volumes:
       - rsc:/code/Resources
+    environment:
+      DOC_PASS: changeit
   jwt:
     build: jwt
     container_name: jwt
@@ -20,8 +22,6 @@ services:
   bd:
     image: mongo:latest
     container_name: mongo
-    ports:
-      - "27016:27017"
     volumes:
       - DBdata:/data/db
 volumes:

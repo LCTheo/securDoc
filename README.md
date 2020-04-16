@@ -3,17 +3,15 @@
 
 A micro-service based program to store file in a Secure way.
 
-## How to start
+## How to setup
 
 - Run `pip install -r requirements.txt` to download dependency (You can run `pip install pyzmq` if an error occurs)
 - Run `python keyCreation.py` script who creates the keys needed for the communication with the ZMQ server.
-- Run `docker-compose up` (Make sure you are using *Docker* and not *Docker Toolbox*, because the specified IP is **localhost**)
+- Change the password variable `JWT_PASS` and `DOC_PASS` in the docker-compose.yml 
+ - if you use a different setup of *Docker* like *Docker Toolbox* or remote docker server, change the `dockerIP` variable in the *front/APIrequest.js* file
 
-(If you want to use it through *Docker Toolbox*, you need to change all the occurrences of **localhost** by
-**192.168.99.100** in the *front/APIrequest.js* file)
-
-## How to use 
-
+## How to start 
+- Run `docker-compose up`
 - Wait for all the dockers to have built
 
 - Open the *front/index.html* page with your web browser (*Firefox* might cause problems)

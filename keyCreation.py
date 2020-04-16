@@ -15,7 +15,7 @@ import os
 def createKey(directoryname, filename):
     keys_dir = os.path.join(os.path.dirname(__file__), directoryname)
     os.mkdir(directoryname)
-    public_key_file, secret_key_file = zmq.auth.create_certificates(keys_dir, filename)
+    zmq.auth.create_certificates(keys_dir, filename)
 
 
 #################################################################
