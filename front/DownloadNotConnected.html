@@ -35,20 +35,16 @@
     </ul>
 </div>
 
-<div class="container" id="main_container">
+<div class="container" id="cont">
     <script>
         if (localStorage.getItem('username')===null) {
-            window.location.replace("DownloadNotConnected.html");
+            var h1 = document.createElement("h1");
+            h1.innerHTML = "You need to be connected to download files.";
+            document.getElementById("cont").appendChild(h1);
+        }else{
+            window.location.replace("Download.html");
         }
     </script>
-    <div class="container">
-        <form action="">
-            <p>Welcome on the download page</p>
-            <div class="container_form" id="container_form">
-                <label class="neon_small"><b>Choose the file(s) to download : </b></label><br> <br>
-            </div>
-        </form>
-    </div>
 </div>
 
 <div class ="footer">

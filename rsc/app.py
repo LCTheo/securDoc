@@ -1,4 +1,3 @@
-
 from importlib.metadata import files
 
 from flask import Flask, request, send_file, render_template
@@ -19,8 +18,8 @@ token_argument.add_argument('token', type=str, required=True)
 data_argument = api.parser()
 data_argument.add_argument('token', type=str, required=True)
 data_argument.add_argument('Data', type=files, required=True)
-if path.exists("./Resource"):
-    os.mkdir("./Resource")
+if not path.exists("./Resources"):
+    os.mkdir("./Resources")
 bufferSize = 64 * 1024
 password = secret = os.getenv('DOC_PASS')
 
@@ -36,8 +35,8 @@ class ResourcesList(Resource):
 
         if data.get('token'):
             if Auth.verifyToken(data.get('token'), user_id):
-                if path.exists("./Resources/ " +user_id):
-                    return {'response': os.listdir("./Resources/ " +user_id)}, 200
+                if path.exists("./Resources/" + user_id):
+                    return {'response': os.listdir("./Resources/" + user_id)}, 200
                 else:
                     return {'response': []}, 200
             else:
@@ -60,17 +59,17 @@ class ResourcesList(Resource):
                     return {'response': "Empty file in payload "}, 401
                 if file:
                     filename = secure_filename(file.filename)
-                    if not path.exists("./Resources/ " +user_id):
-                        os.mkdir("Resources/" + user_id)
+                    if not path.exists("./Resources/" + user_id):
+                        os.mkdir("./Resources/" + user_id)
 
                     file.save(os.path.join("/tmp/", filename))
                     name = filename.rsplit('.', 1)
                     cpt = 1
                     if path.exists(os.path.join("./Resources/" + user_id, filename)):
 
-                        while path.exists(os.path.join("./Resources/" + user_id, name[0 ] +str(cpt ) +". " +name[1])):
+                        while path.exists(os.path.join("./Resources/" + user_id, name[0] + str(cpt) + "." + name[1])):
                             cpt += 1
-                        filepath = os.path.join("./Resources/" + user_id, name[0 ] +str(cpt ) +". " +name[1])
+                        filepath = os.path.join("./Resources/" + user_id, name[0] + str(cpt) + "." + name[1])
                     else:
                         filepath = os.path.join("./Resources/" + user_id, filename)
 

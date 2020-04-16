@@ -2,14 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Download</title>
+    <title>Upload</title>
     <link rel="stylesheet" href="style.css"/>
     <link rel="stylesheet" href="login.css"/>
-    <script src="APIrequest.js"></script>
+    <script src="APIrequest.js" type="text/javascript"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js" type="text/javascript"></script>
-
 </head>
-<body onload="Download()">
+<body>
 
 <div class="navbar">
 
@@ -35,26 +34,21 @@
     </ul>
 </div>
 
-<div class="container" id="main_container">
+<div class="container" id="cont">
     <script>
         if (localStorage.getItem('username')===null) {
-            window.location.replace("DownloadNotConnected.html");
+            var h1 = document.createElement("h1");
+            h1.innerHTML = "You need to be connected to upload files.";
+            document.getElementById("cont").appendChild(h1);
+        }else{
+            window.location.replace("Upload.html");
         }
     </script>
-    <div class="container">
-        <form action="">
-            <p>Welcome on the download page</p>
-            <div class="container_form" id="container_form">
-                <label class="neon_small"><b>Choose the file(s) to download : </b></label><br> <br>
-            </div>
-        </form>
-    </div>
 </div>
+
 
 <div class ="footer">
     <a>Website created by Henri Gléveau, Tristan Guerin, Théo Le Coz and Grégoire Philippe - INFO A2 ENSIBS</a>
 </div>
 </body>
 </html>
-
-

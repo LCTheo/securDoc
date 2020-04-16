@@ -35,6 +35,11 @@
 </div>
 
 <div class="container" id="main_container">
+    <script>
+        if (localStorage.getItem('username')===null) {
+            window.location.replace("UploadNotConnected.html");
+        }
+    </script>
     <form action="javascript:Upload()" enctype="multipart/form-data" method="post" name="fileinfo">
         <p><h1>Welcome on the upload page</h1></p>
         <div class="container_form">
