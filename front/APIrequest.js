@@ -1,5 +1,5 @@
 // change this variable to set the IP where is deployed the project
-const dockerIP = "192.168.137.12";
+const dockerIP = "localhost";
 
 
 function Download(){
@@ -7,14 +7,13 @@ function Download(){
     let user = localStorage.getItem('username');
     let token = localStorage.getItem('token');
 // Open a new connection, using the GET request on the URL endpoint
-    request.open('GET', 'https://'+dockerIP+':5000/rsc/'+user+'?token='+token, true);
+    request.open('GET', 'http://'+dockerIP+':5000/rsc/'+user+'?token='+token, true);
 
     request.onload = function() {
         let data = JSON.parse(this.response);
-        alert()
         i = 0
         while(data["response"].length > i){
-            document.getElementById("container_form").innerHTML += "<br><a href=\"https://"+dockerIP+":5000/rsc/"+user+"/"+data["response"][i]+"?token="+token+"\" download>"+data["response"][i]+"</a>"
+            document.getElementById("container_form").innerHTML += "<br><a href=\"http://"+dockerIP+":5000/rsc/"+user+"/"+data["response"][i]+"?token="+token+"\" download>"+data["response"][i]+"</a>"
             i++
         }
 
@@ -36,7 +35,7 @@ function Upload(){
     fd.append('file', document.forms['fileinfo']['myfile'].files[0] /*, optional filename */)
 
     let req = $.ajax({
-        url: 'https://'+dockerIP+':5000/rsc/'+user+'?token='+token,
+        url: 'http://'+dockerIP+':5000/rsc/'+user+'?token='+token,
         method: 'POST',
         data: fd,
         processData: false, // don't let jquery process the data
@@ -67,7 +66,7 @@ function Registration(){
     }
 
     let req = $.ajax({
-        url: 'https://'+dockerIP+':5001/users/',
+        url: 'http://'+dockerIP+':5001/users/',
         type: 'POST',
         contentType: "application/json",
         data: JSON.stringify(data),
@@ -92,7 +91,7 @@ function Connection(){
     let data = $("form").serialize()
 
     let req = $.ajax({
-        url: 'https://'+dockerIP+':5001/users/',
+        url: 'http://'+dockerIP+':5001/users/',
         type:'GET',
         data: data,
         success: [function(){
@@ -107,13 +106,15 @@ function Connection(){
     req.then(function(response) {
         let regex = /b'(?<token>.+)'/gm;
         let m;
+        let token;
         while ((m = regex.exec(response["response"].toString())) !== null) {
             // This is necessary to avoid infinite loops with zero-width matches
             if (m.index === regex.lastIndex) {
                 regex.lastIndex++;
             }
+            token = m[1]
         }
-        localStorage.setItem('token', m[1]);
+        localStorage.setItem('token', token);
         localStorage.setItem('username', document.getElementById('id').value);
     }, function(xhr) {
         console.error('failed to fetch xhr', xhr)
