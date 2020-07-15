@@ -19,7 +19,7 @@ services:
       container_name: usr
       ports:
         - "5001:5000"
-  bd:
+  mongo:
     image: mongo:latest
     container_name: mongo
     volumes:
