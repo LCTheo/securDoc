@@ -1,5 +1,5 @@
 // change this variable to set the IP where is deployed the project
-const dockerIP = "localhost";
+const dockerIP = "192.168.137.12";
 
 
 function Download(){
